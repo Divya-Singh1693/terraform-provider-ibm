@@ -1,3 +1,84 @@
+# 2.5.0 (August 5, 2026)
+
+## Bug Fixes
+
+### Cloud Databases
+* Adding the flex host_flavors ([6900](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6900))
+* support enterprise-sharding-gen2 plan for mongodb ([6933](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6933))
+
+### Cloud Object Storage
+* fix COS bucket replacement on import with key_protect ([6901](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6901))
+
+### Cloudant
+* Add IBM Cloudant Gen 2 plan support ([6916](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6916))
+
+### IAM
+* IAM Identity: Fix restrict user domains ([6853](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6853))
+* validate invited users ([6902](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6902))
+
+### Power Systems
+* Fix Allow Remote Restart ([6896](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6896))
+
+
+## Enhancements
+
+### Cloud Databases
+* Allow enterprise-gen2 plan for provisioning databases in gen2 using Terraform ([6913](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6913))
+* expand the host_flavor validation and docs for Gen2 flavors ([6932](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6932))
+
+### IAM
+* Ensure an assignment is retryable when ends in a failed state. A destroy/create is unnecessary ([6911](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6911))
+
+
+## Code Refactoring
+
+### Power Systems
+* Refactor Network interface ([6929](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6929))
+
+
+
+# 2.5.0-beta0 (July 23, 2026)
+
+## Bug Fixes
+
+### Backup/Recovery
+* add api support for connector agent ([6778](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6778))
+
+### IAM
+* IAM Identity preferences support ([6803](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6803))
+
+### Partner Center Sell
+* deployment-metadata-other-bug-fix ([6894](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6894))
+
+### Secrets Manager
+* Fix SM tests after server validation changes ([6887](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6887))
+
+### VPC Infrastructure
+* Add checks before setting availability policy attributes  instance data source ([6889](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6889))
+* update inline rule logic to avoid rule deletion in case of patch ([6899](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6899))
+
+
+## Enhancements
+
+### Backup/Recovery
+* added new ocp changes ([6897](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6897))
+
+### General
+* bump golang.org/x/crypto from 0.51.0 to 0.52.0 ([6893](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6893))
+
+### IAM
+* enable idp sharing ([6878](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6878))
+
+### Kubernetes
+* handle ROKS BM VNI floating, and attachment list order changes properly ([6891](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6891))
+
+### VPC Infrastructure
+* added support for instance software attachments ([6895](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6895))
+* AMD Turin Based Profiles ([6883](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6883))
+* support mTLS for ALB ([6882](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6882))
+* support for vpc application Load Balancer (ALB) http bundle ([6859](https://github.com/IBM-Cloud/terraform-provider-ibm/pull/6859))
+
+
 # 2.4.0 (July 1, 2026)
 
 ## Bug Fixes

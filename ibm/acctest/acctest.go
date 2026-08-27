@@ -78,6 +78,7 @@ var (
 	IAMAccountId                    string
 	IAMServiceId                    string
 	IAMTrustedProfileID             string
+	IAMInviteUsersList              string
 	IAMUser                         string
 	ISAddressPrefixCIDR             string
 	ISBootSnapshotID                string
@@ -442,6 +443,13 @@ var (
 	IamIdentityEnterpriseAccountId       string
 )
 
+// for IDP Sharing
+var (
+	IAMIdpID                string
+	IAMIdpAccountId         string
+	IAMIdpConsumerAccountId string
+)
+
 // Projects
 var ProjectsConfigApiKey string
 
@@ -513,6 +521,19 @@ func init() {
 	IamIdentityAssignmentTargetAccountId = os.Getenv("IAM_IDENTITY_ASSIGNMENT_TARGET_ACCOUNT")
 	IamIdentityEnterpriseAccountId = os.Getenv("IAM_IDENTITY_ENTERPRISE_ACCOUNT")
 
+	IAMIdpID = os.Getenv("IBM_IAM_IDP_ID")
+	if IAMIdpID == "" {
+		fmt.Println("[WARN] Set the environment variable IBM_IAM_IDP_ID for testing ibm_iam_idp data source, or some tests for that resource will fail if this is not set correctly")
+	}
+	IAMIdpAccountId = os.Getenv("IBM_IAM_IDP_ACCOUNT_ID")
+	if IAMIdpAccountId == "" {
+		fmt.Println("[WARN] Set the environment variable IBM_IAM_IDP_ACCOUNT_ID for testing ibm_iam_idp resources, or some tests for that resource will fail if this is not set correctly")
+	}
+	IAMIdpConsumerAccountId = os.Getenv("IBM_IAM_IDP_CONSUMER_ACCOUNT_ID")
+	if IAMIdpConsumerAccountId == "" {
+		fmt.Println("[WARN] Set the environment variable IBM_IAM_IDP_CONSUMER_ACCOUNT_ID for testing ibm_iam_idp_account_setting resource, or some tests for that resource will fail if this is not set correctly")
+	}
+
 	ProjectsConfigApiKey = os.Getenv("IBM_PROJECTS_CONFIG_APIKEY")
 	if ProjectsConfigApiKey == "" {
 		fmt.Println("[WARN] Set the environment variable IBM_PROJECTS_CONFIG_APIKEY for testing IBM Projects Config resources, the tests will fail if this is not set")
@@ -554,6 +575,11 @@ func init() {
 	IAMAccessGroupId = os.Getenv("IBM_IAM_ACCESS_GROUP_ID")
 	if IAMAccessGroupId == "" {
 		fmt.Println("[WARN] Set the environment variable IBM_IAM_ACCESS_GROUP_ID for testing ibm_iam_user_invite resource, or some tests for that resource will fail if this is not set correctly")
+	}
+
+	IAMInviteUsersList = os.Getenv("IBM_IAM_INVITE_USERS_LIST")
+	if IAMInviteUsersList == "" {
+		fmt.Println("[WARN] Set the environment variable IBM_IAM_INVITE_USERS_LIST (comma-separated emails) for load-testing ibm_iam_user_invite resource, or the bulk invite tests will be skipped")
 	}
 
 	IAMAccountId = os.Getenv("IBM_IAMACCOUNTID")
@@ -2574,6 +2600,20 @@ func TestAccPreCheckIAMTrustedProfile(t *testing.T) {
 	}
 }
 
+func TestAccPreCheckIAMIdp(t *testing.T) {
+	TestAccPreCheck(t)
+	if IAMIdpAccountId == "" {
+		t.Fatal("IBM_IAM_IDP_ACCOUNT_ID must be set for IDP acceptance tests")
+	}
+}
+
+func TestAccPreCheckIAMIdpAccountSetting(t *testing.T) {
+	TestAccPreCheckIAMIdp(t)
+	if IAMIdpConsumerAccountId == "" {
+		t.Fatal("IBM_IAM_IDP_CONSUMER_ACCOUNT_ID must be set for IDP account-setting acceptance tests")
+	}
+}
+
 func TestAccPreCheckCOS(t *testing.T) {
 	TestAccPreCheck(t)
 	if CosCRN == "" {
@@ -2844,6 +2884,22 @@ func ConfigCompose(config ...string) string {
 	}
 
 	return str.String()
+}
+
+// TestAccPreCheckIAMUserInviteBulk skips the test when IBM_IAM_INVITE_USERS_LIST
+// is not set, so regular CI runs are unaffected. Set the variable to a
+// comma-separated list of real IBM Cloud email addresses that are not yet
+// members of the account under test, e.g.:
+//
+//	IBM_IAM_INVITE_USERS_LIST="user1@example.com,user2@example.com,...,user10@example.com"
+func TestAccPreCheckIAMUserInviteBulk(t *testing.T) {
+	TestAccPreCheck(t)
+	if IAMInviteUsersList == "" {
+		t.Skip("IBM_IAM_INVITE_USERS_LIST must be set as a comma-separated list of emails to run bulk invite load tests")
+	}
+	if IAMAccessGroupId == "" {
+		t.Fatal("IBM_IAM_ACCESS_GROUP_ID must be set for bulk invite tests")
+	}
 }
 
 func configNamedRegionalProvider(providerName string, region string) string {
