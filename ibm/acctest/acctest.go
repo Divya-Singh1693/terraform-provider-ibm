@@ -54,6 +54,7 @@ var (
 	CloudShellAccountID             string
 	CosBackupPolicyID               string
 	CosCRN                          string
+	CloudMonitoringInstanceID       string
 	CosName                         string
 	CsRegion                        string
 	Customerpeerip                  string
@@ -85,6 +86,8 @@ var (
 	ISCIDR                          string
 	ISCIDR2                         string
 	ISCatalogImageName              string
+	ISCatalogImageOfferingCRN       string
+	ISCatalogImagePlanCRN           string
 	ISIPV4Address                   string
 	ISPrivateSSHKeyFilePath         string
 	ISPublicSSHKeyFilePath          string
@@ -678,6 +681,11 @@ func init() {
 		fmt.Println("[WARN] Set the environment variable IBM_CIS_RESOURCE_GROUP with the resource group for the CIS Instance ")
 	}
 
+	CloudMonitoringInstanceID = os.Getenv("IBM_CLOUD_MONITORING_INSTANCE_ID")
+	if CloudMonitoringInstanceID == "" {
+		fmt.Println("[WARN] Set the environment variable IBM_CLOUD_MONITORING_INSTANCE_ID with the GUID or CRN of an IBM Cloud Monitoring instance for testing ibm_cloud_monitoring_api_token")
+	}
+
 	CosCRN = os.Getenv("IBM_COS_CRN")
 	if CosCRN == "" {
 		CosCRN = ""
@@ -1088,6 +1096,18 @@ func init() {
 	if ISCatalogImageName == "" {
 		ISCatalogImageName = "test-catalog"
 		fmt.Println("[INFO] Set the environment variable IS_CATALOG_IMAGE_NAME for testing ibm_is_instance_template resource else it is set to default value 'test-catalog'")
+	}
+
+	ISCatalogImageOfferingCRN = os.Getenv("IS_CATALOG_IMAGE_OFFERING_CRN")
+	if ISCatalogImageOfferingCRN == "" {
+		ISCatalogImageOfferingCRN = "crn:v1:staging:public:globalcatalog-collection:global::1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc:version:4f8466eb-2218-42e3-a755-bf352b559c69-global/6a73aa69-5dd9-4243-a908-3b62f467cbf8-global"
+		fmt.Println("[INFO] Set the environment variable IS_CATALOG_IMAGE_OFFERING_CRN for testing catalog offering and software attachment acceptance tests else it is set to default value 'crn:v1:staging:public:globalcatalog-collection:global::1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc:version:4f8466eb-2218-42e3-a755-bf352b559c69-global/6a73aa69-5dd9-4243-a908-3b62f467cbf8-global'")
+	}
+
+	ISCatalogImagePlanCRN = os.Getenv("IS_CATALOG_IMAGE_PLAN_CRN")
+	if ISCatalogImagePlanCRN == "" {
+		ISCatalogImagePlanCRN = "crn:v1:staging:public:globalcatalog-collection:global::1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc:plan:sw.1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc.279a3cee-ba7d-42d5-ae88-6a0ebc56fa4a-global"
+		fmt.Println("[INFO] Set the environment variable IS_CATALOG_IMAGE_PLAN_CRN for testing catalog offering and software attachment acceptance tests else it is set to default value 'crn:v1:staging:public:globalcatalog-collection:global::1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc:plan:sw.1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc.279a3cee-ba7d-42d5-ae88-6a0ebc56fa4a-global'")
 	}
 
 	ISBootSnapshotID = os.Getenv("IS_BOOT_SNAPSHOT_ID")
@@ -2661,6 +2681,13 @@ func TestAccPreCheckIAMIdpAccountSetting(t *testing.T) {
 	TestAccPreCheckIAMIdp(t)
 	if IAMIdpConsumerAccountId == "" {
 		t.Fatal("IBM_IAM_IDP_CONSUMER_ACCOUNT_ID must be set for IDP account-setting acceptance tests")
+	}
+}
+
+func TestAccPreCheckCloudMonitoring(t *testing.T) {
+	TestAccPreCheck(t)
+	if CloudMonitoringInstanceID == "" {
+		t.Fatal("IBM_CLOUD_MONITORING_INSTANCE_ID must be set for ibm_cloud_monitoring_api_token acceptance tests")
 	}
 }
 
